@@ -9,7 +9,7 @@ namespace PicoPlacaPredictor.Services
     public class DrivingControlService
     {
         private const string DateFormat = "dd/MM/yyyy";
-        private const string TimeFormat = "hh:mm:ss";
+        private const string TimeFormat = "hh:mm";
         private IEnumerable<DrivingRestriction> _drivingRestrictions;
 
         public DrivingControlService(IDrivingDataRepository repository)

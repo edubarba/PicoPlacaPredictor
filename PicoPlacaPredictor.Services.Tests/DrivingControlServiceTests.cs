@@ -63,7 +63,7 @@ namespace PicoPlacaPredictor.Services.Tests
         {
             var plateNumber = "XXXX-XXX1";
             var mondayDate = "16/09/2019";
-            var noRestrictedTime = "12:00:00";
+            var noRestrictedTime = "12:00";
             var drivingRestrictions = new List<DrivingRestriction>
             {
                 new DrivingRestriction {
@@ -89,7 +89,7 @@ namespace PicoPlacaPredictor.Services.Tests
         {
             var plateNumber = "XXXX-XXX1";
             var mondayDate = "16/09/2019";
-            var restrictedTime = "08:00:00";
+            var restrictedTime = "08:00";
             var drivingRestrictions = new List<DrivingRestriction>
             {
                 new DrivingRestriction {
@@ -108,6 +108,40 @@ namespace PicoPlacaPredictor.Services.Tests
             var result = service.CanDrive(plateNumber, mondayDate, restrictedTime);
 
             Assert.False(result);
+        }
+
+        [Fact]
+        public void CanDrive_ShouldThrowAFormatException_WhenDateIsInvalid()
+        {
+            var plateNumber = "XXXX-XXX1";
+            var invalidDate = "xx/xx/xxxx";
+            var drivingRestrictions = new List<DrivingRestriction>
+            {
+                new DrivingRestriction { PlateNumber = "1" }
+            };
+            _repositoryMock.Setup(r => r.LoadDrivingRestrictions()).Returns(drivingRestrictions);
+
+            var service = new DrivingControlService(_repositoryMock.Object);
+            Assert.Throws<FormatException>(() => service.CanDrive(plateNumber, invalidDate, null));
+        }
+
+        [Fact]
+        public void CanDrive_ShouldThrowAFormatException_WhenTimeIsInvalid()
+        {
+            var plateNumber = "XXXX-XXX1";
+            var date = "16/09/2019";
+            var invalidTime = "xx:xx";
+            var drivingRestrictions = new List<DrivingRestriction>
+            {
+                new DrivingRestriction { 
+                    PlateNumber = "1",  
+                    NoDriveDay = new NoDriveDay{ DayName = "MONDAY"}  
+                }
+            };
+            _repositoryMock.Setup(r => r.LoadDrivingRestrictions()).Returns(drivingRestrictions);
+
+            var service = new DrivingControlService(_repositoryMock.Object);
+            Assert.Throws<FormatException>(() => service.CanDrive(plateNumber, date, invalidTime));
         }
     }
 }
