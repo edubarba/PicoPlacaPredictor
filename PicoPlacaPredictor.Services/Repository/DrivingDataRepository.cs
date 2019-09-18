@@ -18,11 +18,11 @@ namespace PicoPlacaPredictor.Services.Repository
         private readonly List<NoDriveTime> NoDriveTimes = new List<NoDriveTime>
         {
             new NoDriveTime {
-                StartHour = DateTime.ParseExact("07:00:00", "hh:mm:ss",null),
-                EndHour = DateTime.ParseExact("09:00:00", "hh:mm:ss",null) },
+                StartHour = DateTime.ParseExact("07:00:00", "HH:mm:ss",null),
+                EndHour = DateTime.ParseExact("09:00:00", "HH:mm:ss",null) },
             new NoDriveTime {
-                StartHour = DateTime.ParseExact("16:00:00", "hh:mm:ss",null),
-                EndHour = DateTime.ParseExact("19:30:00", "hh:mm:ss",null) }
+                StartHour = DateTime.ParseExact("16:00:00", "HH:mm:ss",null),
+                EndHour = DateTime.ParseExact("19:30:00", "HH:mm:ss",null) }
         };
 
         #endregion
