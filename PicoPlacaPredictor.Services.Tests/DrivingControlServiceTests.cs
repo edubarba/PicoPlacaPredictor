@@ -9,57 +9,57 @@ namespace PicoPlacaPredictor.Services.Tests
 {
     public class DrivingControlServiceTests
     {
-        Mock<IDataRepository> _repositoryMock;
+        Mock<IDrivingDataRepository> _repositoryMock;
 
         public DrivingControlServiceTests()
         {
-            _repositoryMock = new Mock<IDataRepository>();
+            _repositoryMock = new Mock<IDrivingDataRepository>();
         }
 
        
         [Fact]
-        public void CanDriveByDate_ShouldReturnTrue_WhenPlateNumberIsNotDrivingRestrictions()
+        public void CanDrive_ShouldReturnTrue_WhenPlateNumberIsNotInDrivingRestrictions()
         {
-            var plateNumber = "XXXX-XXX9";
+            var plateNumber = "XXXX-XXX";
             var drivingRestrictions = new List<DrivingRestriction>
             {
                 new DrivingRestriction {
                     PlateNumber = "1",
                     NoDriveDay = new NoDriveDay{ DayName = "MONDAY"},
-                    NoDriveHours = new List<NoDriveTime>()
+                    NoDriveTimes = new List<NoDriveTime>()
                 }
             };
-            _repositoryMock.Setup(r => r.LoadDrivingSchedule()).Returns(drivingRestrictions);   
+            _repositoryMock.Setup(r => r.LoadDrivingRestrictions()).Returns(drivingRestrictions);   
            
             var service = new DrivingControlService(_repositoryMock.Object);
-            var result = service.CanDriveByDate(plateNumber, null, null);
+            var result = service.CanDrive(plateNumber, null, null);
 
             Assert.True(result);
         }
 
         [Fact]
-        public void CanDriveByDate_ShouldReturnTrue_WhenInputDateDoesNotMatchWithAnyNoDriveDay()
+        public void CanDrive_ShouldReturnTrue_WhenDateIsNotARestrictedDay()
         {
             var plateNumber = "XXXX-XXX1";
-            var noModayDate = "20/09/2019";
+            var noMondayDate = "20/09/2019";
             var drivingRestrictions = new List<DrivingRestriction>
             {
                 new DrivingRestriction {
                     PlateNumber = "1",
                     NoDriveDay = new NoDriveDay{ DayName = "MONDAY"} ,
-                    NoDriveHours = new List<NoDriveTime>()
+                    NoDriveTimes = new List<NoDriveTime>()
                 }
             };
-            _repositoryMock.Setup(r => r.LoadDrivingSchedule()).Returns(drivingRestrictions);   
+            _repositoryMock.Setup(r => r.LoadDrivingRestrictions()).Returns(drivingRestrictions);   
           
             var service = new DrivingControlService(_repositoryMock.Object);
-            var result = service.CanDriveByDate(plateNumber, noModayDate, null);
+            var result = service.CanDrive(plateNumber, noMondayDate, null);
 
             Assert.True(result);
         }
 
         [Fact]
-        public void CanDriveByDate_ShouldReturnTrue_WhenInputDateMatchWithAnyNoDriveDay_And_TimeIsOutRangeOfNoDriveHours()
+        public void CanDrive_ShouldReturnTrue_WhenDateIsARestrictedDayButTimeIsNotARestrictedTime()
         {
             var plateNumber = "XXXX-XXX1";
             var mondayDate = "16/09/2019";
@@ -69,23 +69,23 @@ namespace PicoPlacaPredictor.Services.Tests
                 new DrivingRestriction {
                     PlateNumber = "1",
                     NoDriveDay = new NoDriveDay{ DayName = "MONDAY"} ,
-                    NoDriveHours = new List<NoDriveTime> {
+                    NoDriveTimes = new List<NoDriveTime> {
                             new NoDriveTime {
                                 StartHour = DateTime.ParseExact("07:00:00", "hh:mm:ss",null),
                                 EndHour = DateTime.ParseExact("09:30:00", "hh:mm:ss",null) }
                     }
                 }
             };
-            _repositoryMock.Setup(r => r.LoadDrivingSchedule()).Returns(drivingRestrictions);   
+            _repositoryMock.Setup(r => r.LoadDrivingRestrictions()).Returns(drivingRestrictions);   
 
             var service = new DrivingControlService(_repositoryMock.Object);
-            var result = service.CanDriveByDate(plateNumber, mondayDate, noRestrictedTime);
+            var result = service.CanDrive(plateNumber, mondayDate, noRestrictedTime);
 
             Assert.True(result);
         }
 
         [Fact]
-        public void CanDriveByDate_ShouldReturnFalse_WhenInputDateMatchWithAnyNoDriveDay_And_TimeIsInRangeOfNoDriveHours()
+        public void CanDrive_ShouldReturnFalse_WhenDateIsARestrictedDayAndTimeIsARestrictedTime()
         {
             var plateNumber = "XXXX-XXX1";
             var mondayDate = "16/09/2019";
@@ -95,17 +95,17 @@ namespace PicoPlacaPredictor.Services.Tests
                 new DrivingRestriction {
                     PlateNumber = "1",
                     NoDriveDay = new NoDriveDay{ DayName = "MONDAY"} ,
-                    NoDriveHours = new List<NoDriveTime> {
+                    NoDriveTimes = new List<NoDriveTime> {
                             new NoDriveTime {
                                 StartHour = DateTime.ParseExact("07:00:00", "hh:mm:ss",null),
                                 EndHour = DateTime.ParseExact("09:30:00", "hh:mm:ss",null) }
                     }
                 }
             };
-            _repositoryMock.Setup(r => r.LoadDrivingSchedule()).Returns(drivingRestrictions);
+            _repositoryMock.Setup(r => r.LoadDrivingRestrictions()).Returns(drivingRestrictions);
 
             var service = new DrivingControlService(_repositoryMock.Object);
-            var result = service.CanDriveByDate(plateNumber, mondayDate, restrictedTime);
+            var result = service.CanDrive(plateNumber, mondayDate, restrictedTime);
 
             Assert.False(result);
         }

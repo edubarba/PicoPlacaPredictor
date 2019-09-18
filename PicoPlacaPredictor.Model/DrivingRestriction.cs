@@ -8,6 +8,6 @@ namespace PicoPlacaPredictor.Model
 
         public NoDriveDay NoDriveDay { get; set; }
 
-        public IEnumerable<NoDriveTime> NoDriveHours { get; set; }
+        public IEnumerable<NoDriveTime> NoDriveTimes { get; set; }
     }
 }
